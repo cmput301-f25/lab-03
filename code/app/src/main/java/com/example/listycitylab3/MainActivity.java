@@ -1,6 +1,8 @@
 package com.example.listycitylab3;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +45,24 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.A
         cityList = findViewById(R.id.city_list);
         cityAdapter = new CityArrayAdapter(this, dataList);
         cityList.setAdapter(cityAdapter);
+
+        // Listen for edits coming back from EditCityFragment
+        getSupportFragmentManager().setFragmentResultListener("edit_city", this, (requestKey, bundle) -> {
+            City updated = (City) bundle.getSerializable("city");
+            int position = bundle.getInt("position", -1);
+            if (updated != null && position >= 0 && position < dataList.size()) {
+                dataList.set(position, updated);
+                cityAdapter.notifyDataSetChanged();
+            }
+        });
+
+        // Open edit dialog when an item is clicked
+        cityList.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+            City c = cityAdapter.getItem(position);
+            if (c != null) {
+                EditCityFragment.newInstance(c, position).show(getSupportFragmentManager(), "Edit City");
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.button_add_city);
         fab.setOnClickListener(v -> new AddCityFragment().show(getSupportFragmentManager(), "Add City"));

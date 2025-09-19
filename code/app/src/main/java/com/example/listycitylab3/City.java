@@ -1,6 +1,10 @@
 package com.example.listycitylab3;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private String province;
 
@@ -16,5 +20,13 @@ public class City {
     public String getProvince() {
         return province;
     }
-}
 
+    // setters added so fragment can modify an existing city
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+}
